@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-TULIP-Version: 0.0.1
-TULIP: TULIP ${version}
-Main-Class: com.ardikars.tulip.TULIP
-
