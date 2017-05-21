@@ -85,7 +85,7 @@ public class ICMPTrap extends Thread {
 
         Map<Class, Packet> packets = PacketHelper.next(StaticField.ICMP_HANDLER, pktHdr);
         if (packets != null) {
-            ICMP icmpCap = (ICMP) packets.get(ICMP.class);
+            ICMPv4 icmpCap = (ICMPv4) packets.get(ICMPv4.class);
             if (icmpCap != null) {
                 System.out.println(icmpCap);
                 return;

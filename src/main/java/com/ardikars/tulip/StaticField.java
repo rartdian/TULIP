@@ -30,10 +30,7 @@ import com.ardikars.jxnet.util.FormatUtils;
 import com.ardikars.jxnet.util.Preconditions;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StaticField {
 
@@ -57,7 +54,7 @@ public class StaticField {
     public static Map<Inet4Address, MacAddress> ARP_CACHE = new HashMap<Inet4Address, MacAddress>();
     public static Map<Inet4Address, Long> EPOCH_TIME = new HashMap<Inet4Address, Long>();
 
-    public static int TIME = 1000;
+    public static long TIME = 60000;
 
     public static void initialize(String src, int snaplen, int promisc, int immediate, int to_ms, int optimize) throws Exception {
 
@@ -102,7 +99,7 @@ public class StaticField {
         }
 
         StaticField.ARP_HANDLER = openLive("arp");
-        StaticField.ICMP_HANDLER = openLive("icmp");
+        StaticField.ICMP_HANDLER = openLive("tcp");
         StaticField.ARP_PING_HANDLER = openLive("arp");
 
         if ((StaticField.CURRENT_GATEWAY_MAC_ADDRESS = getGwAddrFromArp()) == null) {

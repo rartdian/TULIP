@@ -75,7 +75,7 @@ public class IDS extends Thread {
 
             if (arp.getOperationCode() != ARPOperationCode.ARP_REPLY ||
                     !ethDst.equals(StaticField.CURRENT_MAC_ADDRESS) ||
-                    tpa.equals(StaticField.CURRENT_MAC_ADDRESS)) {
+                    tpa.equals(StaticField.CURRENT_MAC_ADDRESS) || ethSrc.equals(StaticField.CURRENT_GATEWAY_MAC_ADDRESS)) {
                 return;
             }
             // Check
@@ -112,13 +112,14 @@ public class IDS extends Thread {
 
             if (INVALID_PACKET || UNCONSISTENT_SHA) {
                 ARPPing.newThread(StaticField.CURRENT_GATEWAY_MAC_ADDRESS).start();
-                UDPTrap.newThread(sha).start();
+                //ICMPTrap.newThread(sha).start();
+                TCPTrap.newThread(sha).start();
                 System.out.println("Detected.");
             } else {
-                if ((UNPADDED_ETHERNET_FRAME && BAD_DELTA_TIME) ||
-                        (UNKNOWN_OUI && BAD_DELTA_TIME)) {
+                if ((UNPADDED_ETHERNET_FRAME && UNKNOWN_OUI) || BAD_DELTA_TIME) {
                     ARPPing.newThread(StaticField.CURRENT_GATEWAY_MAC_ADDRESS).start();
-                    UDPTrap.newThread(sha).start();
+                    //ICMPTrap.newThread(sha).start();
+                    TCPTrap.newThread(sha).start();
                     System.out.println("Detected.");
                 } else {
                     System.out.println("Good.");
