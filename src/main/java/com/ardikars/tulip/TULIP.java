@@ -20,6 +20,7 @@ package com.ardikars.tulip;
 public class TULIP {
 
     private static IDS ids = IDS.newThread();
+    private static ARPPing arpping = ARPPing.newThread();
 
     public static void main(String[] args) {
 
@@ -32,12 +33,14 @@ public class TULIP {
         }
 
         try {
-            StaticField.initialize(source, 1500, 1, 1, 2000, 1);
+            StaticField.initialize(source, 1500, 1, 1, (int) StaticField.LOOP_TIME, 1);
+            //arpping.start();
             ids.start();
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     try {
-                        Thread.sleep(200);
+                        Thread.sleep(StaticField.LOOP_TIME);
+			//arpping.stopThread();
                         ids.stopThread();
                         System.out.println("Closed.");
                     } catch (InterruptedException e) {

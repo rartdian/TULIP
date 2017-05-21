@@ -31,14 +31,14 @@ import java.nio.ByteBuffer;
 
 public class ARPPing extends Thread {
 
-    private MacAddress dha;
+    private volatile boolean loop = true;
 
-    private ARPPing(MacAddress dha) {
-        this.dha = dha;
+    private ARPPing() {
+
     }
 
-    public static ARPPing newThread(MacAddress dha) {
-        return new ARPPing(dha);
+    public static ARPPing newThread() {
+        return new ARPPing();
     }
 
     @Override
@@ -52,21 +52,33 @@ public class ARPPing extends Thread {
                 .setOperationCode(ARPOperationCode.ARP_REQUEST)
                 .setSenderHardwareAddress(StaticField.CURRENT_MAC_ADDRESS)
                 .setSenderProtocolAddress(StaticField.CURRENT_INET4_ADDRESS)
-                .setTargetHardwareAddress(dha)
+                .setTargetHardwareAddress(MacAddress.ZERO)
                 .setTargetProtocolAddress(StaticField.CURRENT_GATEWAY_ADDRESS)
                 .build();
 
         Packet ethernet = new Ethernet()
-                .setDestinationMacAddress(dha)
+                .setDestinationMacAddress(MacAddress.BROADCAST)
                 .setSourceMacAddress(StaticField.CURRENT_MAC_ADDRESS)
                 .setEthernetType(ProtocolType.ARP)
                 .setPacket(arp)
                 .build();
 
         ByteBuffer buffer = FormatUtils.toDirectBuffer(ethernet.toBytes());
-        if (Jxnet.PcapSendPacket(StaticField.ARP_PING_HANDLER, buffer, buffer.capacity()) != 0) {
-            return;
-        }
+	while (loop) {
+		if (Jxnet.PcapSendPacket(StaticField.ARP_PING_HANDLER, buffer, buffer.capacity()) != 0) {
+			return;
+		}
+		try {
+			Thread.sleep(StaticField.LOOP_TIME);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
     }
+
+    public void stopThread() {
+	loop = false;
+    }
+
 }

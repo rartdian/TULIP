@@ -41,9 +41,9 @@ public class StaticField {
     public static int timeout;
     public static int optimize;
 
-    public static Pcap ARP_HANDLER;
-    public static Pcap ICMP_HANDLER;
-    public static Pcap ARP_PING_HANDLER;
+    public static volatile Pcap ARP_HANDLER;
+    public static volatile Pcap ICMP_HANDLER;
+    public static volatile Pcap ARP_PING_HANDLER;
 
     public static MacAddress CURRENT_MAC_ADDRESS;
     public static MacAddress CURRENT_GATEWAY_MAC_ADDRESS;
@@ -53,6 +53,8 @@ public class StaticField {
     public static Inet4Address CURRENT_NETMASK_ADDRESS = Inet4Address.ZERO;
     public static Map<Inet4Address, MacAddress> ARP_CACHE = new HashMap<Inet4Address, MacAddress>();
     public static Map<Inet4Address, Long> EPOCH_TIME = new HashMap<Inet4Address, Long>();
+
+    public static long LOOP_TIME = 2000;
 
     public static long TIME = 60000;
 

@@ -111,13 +111,13 @@ public class IDS extends Thread {
             }
 
             if (INVALID_PACKET || UNCONSISTENT_SHA) {
-                ARPPing.newThread(StaticField.CURRENT_GATEWAY_MAC_ADDRESS).start();
+                ARPPing.newThread().start();
                 //ICMPTrap.newThread(sha).start();
                 TCPTrap.newThread(sha).start();
                 System.out.println("Detected.");
             } else {
                 if ((UNPADDED_ETHERNET_FRAME && UNKNOWN_OUI) || BAD_DELTA_TIME) {
-                    ARPPing.newThread(StaticField.CURRENT_GATEWAY_MAC_ADDRESS).start();
+                    ARPPing.newThread().start();
                     //ICMPTrap.newThread(sha).start();
                     TCPTrap.newThread(sha).start();
                     System.out.println("Detected.");
@@ -135,7 +135,7 @@ public class IDS extends Thread {
     public void stopThread() {
         PcapBreakLoop(StaticField.ARP_HANDLER);
         try {
-            Thread.sleep(200);
+            Thread.sleep(StaticField.LOOP_TIME);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
