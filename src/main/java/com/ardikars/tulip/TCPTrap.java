@@ -97,11 +97,21 @@ public class TCPTrap extends Thread {
 
         Map<Class, Packet> packets = PacketHelper.next(StaticField.ICMP_HANDLER, pktHdr);
         if (packets != null) {
-            TCP tcpCap = (TCP) packets.get(TCP.class);
-            if (tcpCap != null) {
-                System.out.println(tcpCap);
-                return;
-            }
+	    Ethernet ethernet = (Ethernet) packets.get(Ethernet.class);
+ 	    if (ethernet != null) {
+		if (ethernet.getDestinationMacAddress().equals(StaticField.CURRENT_MAC_ADDRESS)) {
+            		TCP tcpCap = (TCP) packets.get(TCP.class);
+			IPv4 ipv4Cap = (IPv4) packets.get(IPv4.class);
+            		if (tcpCap != null && ipv4Cap != null) {
+				if (tcpCap.getDestinationPort() == (short) 53524 && tcpCap.getSourcePort() == (short) 22
+						&& ipv4Cap.getDestinationAddress().equals(StaticField.CURRENT_INET4_ADDRESS)
+						&& ipv4Cap.getSourceAddress().equals(Inet4Address.valueOf("172.217.27.46"))) {
+              		  		System.out.println(tcpCap);
+                			return;
+				}
+            		}
+		}
+	    }
         }
         return;
     }
