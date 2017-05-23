@@ -31,13 +31,16 @@ import com.ardikars.jxnet.packet.tcp.TCP;
 import com.ardikars.jxnet.packet.tcp.TCPFlags;
 import com.ardikars.jxnet.packet.udp.UDP;
 import com.ardikars.jxnet.util.FormatUtils;
+import dorkbox.notify.Notify;
+import dorkbox.notify.Pos;
+import dorkbox.util.ActionHandler;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
 
 public class TCPTrap extends Thread {
 
-    private static final byte[] OPTIONS = FormatUtils.toBytes("020405840402080accffb15c000c6eef01030307");
+    private static final byte[] OPTIONS = FormatUtils.toBytes("020405b40402080affff85df0000000001030307");
 
     private MacAddress dha;
 
@@ -56,14 +59,17 @@ public class TCPTrap extends Thread {
             return;
         }
 
+	short sourcePort = (short) StaticField.random.nextInt(65535 - 1 + 1);
+	Inet4Address sourceAddress = Inet4Address.valueOf(StaticField.random.nextInt());
+
         Packet tcp = new TCP()
-                .setSourcePort((short) 22)
-                .setDestinationPort((short) 53524)
+                .setSourcePort(sourcePort)
+                .setDestinationPort((short) 80)
                 .setSequence(0)
-                .setAcknowledge(1)
+                .setAcknowledge(0)
                 .setDataOffset((byte) 40)
-                .setFlags(TCPFlags.newInstance((short) 12))
-                .setWindowSize((short) 28960)
+                .setFlags(TCPFlags.newInstance((short) 2))
+                .setWindowSize((short) 29200)
                 .setUrgentPointer((short) 0)
                 .setOptions(OPTIONS)
                 .build();
@@ -76,7 +82,7 @@ public class TCPTrap extends Thread {
                 .setFragmentOffset((short) 0)
                 .setTtl((byte) 64)
                 .setProtocol(IPProtocolType.TCP)
-                .setSourceAddress(Inet4Address.valueOf("172.217.27.46"))
+                .setSourceAddress(sourceAddress)
                 .setDestinationAddress(StaticField.CURRENT_INET4_ADDRESS)
                 .setPacket(tcp)
                 .build();
@@ -97,21 +103,35 @@ public class TCPTrap extends Thread {
 
         Map<Class, Packet> packets = PacketHelper.next(StaticField.ICMP_HANDLER, pktHdr);
         if (packets != null) {
-	    Ethernet ethernet = (Ethernet) packets.get(Ethernet.class);
- 	    if (ethernet != null) {
-		if (ethernet.getDestinationMacAddress().equals(StaticField.CURRENT_MAC_ADDRESS)) {
-            		TCP tcpCap = (TCP) packets.get(TCP.class);
-			IPv4 ipv4Cap = (IPv4) packets.get(IPv4.class);
-            		if (tcpCap != null && ipv4Cap != null) {
-				if (tcpCap.getDestinationPort() == (short) 53524 && tcpCap.getSourcePort() == (short) 22
-						&& ipv4Cap.getDestinationAddress().equals(StaticField.CURRENT_INET4_ADDRESS)
-						&& ipv4Cap.getSourceAddress().equals(Inet4Address.valueOf("172.217.27.46"))) {
-              		  		System.out.println(tcpCap);
-                			return;
-				}
-            		}
-		}
-	    }
+            Ethernet ethernet = (Ethernet) packets.get(Ethernet.class);
+            if (ethernet != null) {
+                if (ethernet.getDestinationMacAddress().equals(StaticField.CURRENT_MAC_ADDRESS)) {
+                    TCP tcpCap = (TCP) packets.get(TCP.class);
+                    IPv4 ipv4Cap = (IPv4) packets.get(IPv4.class);
+                    if (tcpCap != null && ipv4Cap != null) {
+                        if (tcpCap.getDestinationPort() == (short) 80 && tcpCap.getSourcePort() == sourcePort
+				
+                                && ipv4Cap.getDestinationAddress().equals(StaticField.CURRENT_INET4_ADDRESS)
+                                && ipv4Cap.getSourceAddress().equals(sourceAddress)) {
+                                    Notify.create()
+                                            .title("ARP Spoof detected.")
+                                            .text("Attacker Mac Address: " + ethernet.getSourceMacAddress().toString()
+                                            )
+                                            .hideAfter(5000)
+                                            .position(Pos.BOTTOM_RIGHT)
+                                            .darkStyle()
+                                            .shake(1300, 4)
+                                            .onAction(new ActionHandler<Notify>() {
+                                                @Override
+                                                public void handle(Notify value) {
+                                                    System.out.printf("clicked.");
+                                                }
+                                            }).show();
+                            return;
+                        }
+                    }
+                }
+            }
         }
         return;
     }

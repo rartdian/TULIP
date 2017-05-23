@@ -49,14 +49,16 @@ public class StaticField {
     public static MacAddress CURRENT_GATEWAY_MAC_ADDRESS;
     public static Inet4Address CURRENT_INET4_ADDRESS;
     public static Inet4Address CURRENT_GATEWAY_ADDRESS;
-    public static Inet4Address CURRENT_NETWORK_ADDRESS = Inet4Address.ZERO;
-    public static Inet4Address CURRENT_NETMASK_ADDRESS = Inet4Address.ZERO;
+    public static Inet4Address CURRENT_NETWORK_ADDRESS = Inet4Address.valueOf(0);
+    public static Inet4Address CURRENT_NETMASK_ADDRESS = Inet4Address.valueOf(0);
     public static Map<Inet4Address, MacAddress> ARP_CACHE = new HashMap<Inet4Address, MacAddress>();
     public static Map<Inet4Address, Long> EPOCH_TIME = new HashMap<Inet4Address, Long>();
 
     public static long LOOP_TIME = 2000;
 
     public static long TIME = 60000;
+
+    public static Random random = new Random();
 
     public static void initialize(String src, int snaplen, int promisc, int immediate, int to_ms, int optimize) throws Exception {
 

@@ -62,12 +62,6 @@ public class IDS extends Thread {
             Inet4Address spa = null;
             Inet4Address tpa = null;
 
-            boolean INVALID_PACKET = false;
-            boolean UNCONSISTENT_SHA = false;
-            boolean UNPADDED_ETHERNET_FRAME = false;
-            boolean UNKNOWN_OUI = false;
-            boolean BAD_DELTA_TIME = false;
-
             sha = arp.getSenderHardwareAddress();
             tha = arp.getTargetHardwareAddress();
             spa = arp.getSenderProtocolAddress();
@@ -81,50 +75,48 @@ public class IDS extends Thread {
             // Check
 
             if (!ethSrc.equals(sha) || !ethDst.equals(tha)) {
-                INVALID_PACKET = true;
-            }
-
-            MacAddress shaCache = StaticField.ARP_CACHE.get(spa);
-            if  (shaCache == null) {
-                StaticField.ARP_CACHE.put(spa, sha);
+				//ARPPing.newThread().start();
+				//ICMPTrap.newThread(sha).start();
+				TCPTrap.newThread(sha).start();
+				System.out.println("Detected.");
             } else {
-                if (!sha.equals(shaCache)) {
-                    UNCONSISTENT_SHA = true;
-                }
-                StaticField.ARP_CACHE.put(spa, sha);
-            }
+	            MacAddress shaCache = StaticField.ARP_CACHE.get(spa);
+    	        if  (shaCache == null) {
+					StaticField.ARP_CACHE.put(spa, sha);
+	            } else {
+    	            if (!sha.equals(shaCache)) {
+			    TCPTrap.newThread(sha).start();
+        	            System.out.println("Detected.");
+    	            } else {
+						boolean UNPADDED_ETHERNET_FRAME = false;
+						boolean UNKNOWN_OUI = false;
+						boolean BAD_DELTA_TIME = false;
 
-            UNPADDED_ETHERNET_FRAME = (pktHdr.getCapLen() < 60 ? true : false);
+						UNPADDED_ETHERNET_FRAME = (pktHdr.getCapLen() < 60 ? true : false);
+						if (OUI.searchVendor(arp.getSenderHardwareAddress().toString()).equals("")) {
+                			UNKNOWN_OUI = true;
+	            		}
+						Long epochTimeCache = StaticField.EPOCH_TIME.get(spa);
+						if (epochTimeCache == null || epochTimeCache == 0) {
+							StaticField.EPOCH_TIME.put(spa, pktHdr.getTvUsec());
+						} else {
+							long time = (pktHdr.getTvUsec() - epochTimeCache);
+							if (time < StaticField.TIME) {
+								BAD_DELTA_TIME = true;
+							}
+							StaticField.EPOCH_TIME.put(spa, pktHdr.getTvUsec());
+						}
+						if ((UNPADDED_ETHERNET_FRAME && UNKNOWN_OUI) || BAD_DELTA_TIME) {
+							TCPTrap.newThread(sha).start();
 
-            if (OUI.searchVendor(arp.getSenderHardwareAddress().toString()).equals("")) {
-                UNKNOWN_OUI = true;
-            }
-
-            Long epochTimeCache = StaticField.EPOCH_TIME.get(spa);
-            if (epochTimeCache == null || epochTimeCache == 0) {
-                StaticField.EPOCH_TIME.put(spa, pktHdr.getTvUsec());
-            } else {
-                long time = (pktHdr.getTvUsec() - epochTimeCache);
-                if (time < StaticField.TIME)
-                    BAD_DELTA_TIME = true;
-                StaticField.EPOCH_TIME.put(spa, pktHdr.getTvUsec());
-            }
-
-            if (INVALID_PACKET || UNCONSISTENT_SHA) {
-                ARPPing.newThread().start();
-                //ICMPTrap.newThread(sha).start();
-                TCPTrap.newThread(sha).start();
-                System.out.println("Detected.");
-            } else {
-                if ((UNPADDED_ETHERNET_FRAME && UNKNOWN_OUI) || BAD_DELTA_TIME) {
-                    ARPPing.newThread().start();
-                    //ICMPTrap.newThread(sha).start();
-                    TCPTrap.newThread(sha).start();
-                    System.out.println("Detected.");
-                } else {
-                    System.out.println("Good.");
-                }
-            }
+							System.out.println("Detected.");
+						} else {
+							System.out.println("Good.");
+						}
+					}
+					StaticField.ARP_CACHE.put(spa, sha);
+				}
+			}
 
         };
 

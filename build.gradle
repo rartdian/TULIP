@@ -15,6 +15,19 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDirs 'src/main/resources'
+            include '**/*'
+        }
+    }
+}
+
+
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'com.ardikars.tulip.TULIP'
 }
@@ -36,5 +49,5 @@ artifacts {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'junit:junit:4.12'
+    compile 'com.dorkbox:Notify:2.20'
 }

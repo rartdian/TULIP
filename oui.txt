@@ -383,7 +383,7 @@
 00:01:46	TescoCon               # Tesco Controls, Inc.
 00:01:47	ZhoneTec               # Zhone Technologies
 00:01:48	X-Traweb               # X-traWeb Inc.
-00:01:49	TDTTrans               # T.D.T. Transfer Data Test GmbH
+00:01:49	TDTTrans               # T.D.T. Transfer Data TestUnit GmbH
 00:01:4A	Sony                   # Sony Corporation
 00:01:4B	Ennovate               # Ennovate Networks, Inc.
 00:01:4C	Berkeley               # Berkeley Process Control
@@ -1104,7 +1104,7 @@
 00:04:17	Elau                   # ELAU AG
 00:04:18	Teltroni               # Teltronic S.A.U.
 00:04:19	Fibercyc               # Fibercycle Networks, Inc.
-00:04:1A	InesTest               # Ines Test and Measurement GmbH & CoKG
+00:04:1A	InesTest               # Ines TestUnit and Measurement GmbH & CoKG
 00:04:1B	Bridgewo               # Bridgeworks Ltd.
 00:04:1C	Ipdialog               # ipDialog, Inc.
 00:04:1D	CoregaOf               # Corega of America
@@ -1487,7 +1487,7 @@
 00:05:96	Genotech               # Genotech Co., Ltd.
 00:05:97	EagleTra               # Eagle Traffic Control Systems
 00:05:98	CronosSR               # CRONOS S.r.l.
-00:05:99	DrsTestA               # DRS Test and Energy Management or DRS-TEM
+00:05:99	DrsTestA               # DRS TestUnit and Energy Management or DRS-TEM
 00:05:9A	Powercom	# PowerComputing (Mac clone)
 00:05:9B	Cisco                  # Cisco Systems, Inc
 00:05:9C	Kleinkne               # Kleinknecht GmbH, Ing. Büro
@@ -2965,7 +2965,7 @@
 00:0B:78	Taifatec               # TAIFATECH INC.
 00:0B:79	X-Com                  # X-COM, Inc.
 00:0B:7A	L-3Linka               # L-3 Linkabit
-00:0B:7B	Test-Um                # Test-Um Inc.
+00:0B:7B	TestUnit-Um                # TestUnit-Um Inc.
 00:0B:7C	TelexCom               # Telex Communications
 00:0B:7D	SolomonE               # SOLOMON EXTREME INTERNATIONAL LTD.
 00:0B:7E	Saginomi               # SAGINOMIYA Seisakusho Inc.
@@ -5469,7 +5469,7 @@
 00:15:40	NortelNe               # Nortel Networks
 00:15:41	Stratali               # StrataLight Communications, Inc.
 00:15:42	Microhar               # MICROHARD S.R.L.
-00:15:43	Aberdeen               # Aberdeen Test Center
+00:15:43	Aberdeen               # Aberdeen TestUnit Center
 00:15:44	ComSAT                 # coM.s.a.t. AG
 00:15:45	Seecode                # SEECODE Co., Ltd.
 00:15:46	ItgWorld               # ITG Worldwide Sdn Bhd
@@ -9594,7 +9594,7 @@
 00:24:97	Cisco                  # Cisco Systems, Inc
 00:24:98	Cisco                  # Cisco Systems, Inc
 00:24:99	AquilaTe               # Aquila Technologies
-00:24:9A	BeijingZ               # Beijing Zhongchuang Telecommunication Test Co., Ltd.
+00:24:9A	BeijingZ               # Beijing Zhongchuang Telecommunication TestUnit Co., Ltd.
 00:24:9B	ActionSt               # Action Star Enterprise Co., Ltd.
 00:24:9C	BimengCo               # Bimeng Comunication System Co. Ltd
 00:24:9D	NesTechn               # NES Technology Inc.
@@ -11429,7 +11429,7 @@
 00:50:C2:1B:C0:00/36	DinecInt               # DINEC International
 00:50:C2:1B:D0:00/36	Aioi                   # AIOI Systems Co., Ltd.
 00:50:C2:1B:E0:00/36	SediaEle               # Sedia Electronics
-00:50:C2:1B:F0:00/36	Internat               # International Test & Engineering Services Co.,Ltd.
+00:50:C2:1B:F0:00/36	Internat               # International TestUnit & Engineering Services Co.,Ltd.
 00:50:C2:1C:00:00/36	Willmoni               # WillMonius Inc.
 00:50:C2:1C:10:00/36	Infiniti               # InfinitiNetworks Inc.
 00:50:C2:1C:20:00/36	Weltroni               # Weltronics Corp.
@@ -13348,7 +13348,7 @@
 00:50:C2:93:B0:00/36	Reliatro               # Reliatronics Inc.
 00:50:C2:93:C0:00/36	Fracture               # FractureCode Corporation
 00:50:C2:93:D0:00/36	Lighting               # Lighting Science Group
-00:50:C2:93:E0:00/36	RcsCommu               # RCS Communication Test Systems Ltd.
+00:50:C2:93:E0:00/36	RcsCommu               # RCS Communication TestUnit Systems Ltd.
 00:50:C2:93:F0:00/36	TsbSolut               # TSB Solutions Inc.
 00:50:C2:94:00:00/36	Phitek                 # Phitek Systems Ltd.
 00:50:C2:94:10:00/36	Rolbit
@@ -15493,7 +15493,7 @@
 00:80:27	Adaptive               # ADAPTIVE SYSTEMS, INC.
 00:80:28	Tradpost               # TRADPOST (HK) LTD
 00:80:29	Microdyn	# Microdyne Corporation
-00:80:2A	TestSimu	# Test Systems & Simulations Inc
+00:80:2A	TestSimu	# TestUnit Systems & Simulations Inc
 00:80:2B	Integrat               # INTEGRATED MARKETING CO
 00:80:2C	SageGrou	# The Sage Group PLC
 00:80:2D	Xylogics	# Xylogics, Inc.			Annex terminal servers
@@ -19192,7 +19192,7 @@
 28:E7:CF	Apple                  # Apple, Inc.
 28:ED:58	JagJakob               # JAG Jakob AG
 28:ED:6A	Apple                  # Apple, Inc.
-28:EE:2C	Frontlin               # Frontline Test Equipment
+28:EE:2C	Frontlin               # Frontline TestUnit Equipment
 28:EE:52	Tp-LinkT               # TP-LINK TECHNOLOGIES CO.,LTD.
 28:EE:D3	Shenzhen               # Shenzhen Super D Technology Co., Ltd
 28:EF:01	Private
@@ -20772,7 +20772,7 @@
 40:D8:55:18:80:00/36	Array                  # Array Corporation
 40:D8:55:18:90:00/36	Yoozma                 # Yoozma Corporation
 40:D8:55:18:A0:00/36	AplexTec               # Aplex Technology Inc.
-40:D8:55:18:B0:00/36	Diagnosy               # Diagnosys Test Systems Ltd
+40:D8:55:18:B0:00/36	Diagnosy               # Diagnosys TestUnit Systems Ltd
 40:D8:55:18:C0:00/36	EosSRL                 # EOS S.r.l.
 40:D8:55:18:D0:00/36	ZoeMedic               # Zoe Medical
 40:D8:55:18:E0:00/36	KerunVis               # Kerun Visual Technology Co., Ltd.(Shenzhen)
@@ -24353,7 +24353,7 @@
 70:B3:D5:B1:60:00/36	XiAnShen               # XI'AN SHENMING ELECTRON TECHNOLOGY CO.,LTD
 70:B3:D5:B1:A0:00/36	Aaronia                # Aaronia AG
 70:B3:D5:B1:D0:00/36	SafeletB               # Safelet BV
-70:B3:D5:B2:30:00/36	Supervis               # Supervision Test et Pilotage
+70:B3:D5:B2:30:00/36	Supervis               # Supervision TestUnit et Pilotage
 70:B3:D5:B2:40:00/36	DatasatD               # Datasat Digital Entertainment
 70:B3:D5:B2:60:00/36	IntecInt               # INTEC International GmbH
 70:B3:D5:B2:80:00/36	HustyMSt               # HUSTY M.Styczen J.Hupert sp.j.
@@ -24865,7 +24865,7 @@
 70:B3:D5:F9:E0:00/36	Internat               # International Center for Elementary Particle Physics, The University of Tokyo
 70:B3:D5:FA:00:00/36	Tiama
 70:B3:D5:FA:10:00/36	BbiEngin               # BBI Engineering, Inc.
-70:B3:D5:FA:20:00/36	SarokalT               # Sarokal Test Systems Oy
+70:B3:D5:FA:20:00/36	SarokalT               # Sarokal TestUnit Systems Oy
 70:B3:D5:FA:40:00/36	Energybo               # Energybox Limited
 70:B3:D5:FA:70:00/36	Nordson                # Nordson Corporation
 70:B3:D5:FA:A0:00/36	LogimSof               # LogiM GmbH Software und Entwicklung
@@ -31920,7 +31920,7 @@ AB-00-00-03-00-00	DECNET-Phase-IV-end-node-Hello-packets
 AB-00-00-04-00-00	DECNET-Phase-IV-Router-Hello-packets
 AB-00-03-00-00-00	DEC-Local-Area-Transport-(LAT)-old
 AB-00-04-01-00-00/32	DEC-Local-Area-VAX-Cluster-groups-SCA
-CF-00-00-00-00-00	Ethernet-Configuration-Test-protocol-(Loopback)
+CF-00-00-00-00-00	Ethernet-Configuration-TestUnit-protocol-(Loopback)
 FF-FF-00-60-00-04	Lantastic
 FF-FF-00-40-00-01	Lantastic
 FF-FF-01-E0-00-04	Lantastic

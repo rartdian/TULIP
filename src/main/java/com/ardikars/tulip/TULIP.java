@@ -24,6 +24,11 @@ public class TULIP {
 
     public static void main(String[] args) {
 
+            console(args);
+
+    }
+
+    private static void console(String[] args) {
         String source = null;
 
         if (args.length > 0) {
@@ -40,7 +45,7 @@ public class TULIP {
                 public void run() {
                     try {
                         Thread.sleep(StaticField.LOOP_TIME);
-			//arpping.stopThread();
+                        //arpping.stopThread();
                         ids.stopThread();
                         System.out.println("Closed.");
                     } catch (InterruptedException e) {
@@ -51,7 +56,6 @@ public class TULIP {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 }
