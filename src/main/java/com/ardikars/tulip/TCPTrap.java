@@ -29,12 +29,7 @@ import com.ardikars.jxnet.packet.ip.IPProtocolType;
 import com.ardikars.jxnet.packet.ip.IPv4;
 import com.ardikars.jxnet.packet.tcp.TCP;
 import com.ardikars.jxnet.packet.tcp.TCPFlags;
-import com.ardikars.jxnet.packet.udp.UDP;
 import com.ardikars.jxnet.util.FormatUtils;
-import dorkbox.notify.Notify;
-import dorkbox.notify.Pos;
-import dorkbox.util.ActionHandler;
-
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -86,14 +81,14 @@ public class TCPTrap extends Thread {
                 .setDestinationAddress(StaticField.CURRENT_INET4_ADDRESS)
                 .setPacket(tcp)
                 .build();
-        Packet udpTrap = new Ethernet()
+        Packet tcpTrap = new Ethernet()
                 .setDestinationMacAddress(dha)
                 .setSourceMacAddress(StaticField.CURRENT_MAC_ADDRESS)
                 .setEthernetType(ProtocolType.IPV4)
                 .setPacket(ipv4)
                 .build();
 
-        ByteBuffer buffer = FormatUtils.toDirectBuffer(udpTrap.toBytes());
+        ByteBuffer buffer = FormatUtils.toDirectBuffer(tcpTrap.toBytes());
         Map<Class, Packet> packetMap;
         PcapPktHdr pktHdr = new PcapPktHdr();
 
@@ -110,27 +105,27 @@ public class TCPTrap extends Thread {
                     IPv4 ipv4Cap = (IPv4) packets.get(IPv4.class);
                     if (tcpCap != null && ipv4Cap != null) {
                         if (tcpCap.getDestinationPort() == (short) 80 && tcpCap.getSourcePort() == sourcePort
-				
                                 && ipv4Cap.getDestinationAddress().equals(StaticField.CURRENT_INET4_ADDRESS)
                                 && ipv4Cap.getSourceAddress().equals(sourceAddress)) {
-                                    Notify.create()
-                                            .title("ARP Spoof detected.")
-                                            .text("Attacker Mac Address: " + ethernet.getSourceMacAddress().toString()
-                                            )
-                                            .hideAfter(5000)
-                                            .position(Pos.BOTTOM_RIGHT)
-                                            .darkStyle()
-                                            .shake(1300, 4)
-                                            .onAction(new ActionHandler<Notify>() {
-                                                @Override
-                                                public void handle(Notify value) {
-                                                    System.out.printf("clicked.");
-                                                }
-                                            }).show();
+                                if (StaticField.LOGGER != null) {
+                                    StaticField.LOGGER.log("IP Packet Routing enabled by: "
+                                            + ethernet.getSourceMacAddress().toString());
+                                }
+                                if (StaticField.IPS) {
+                                    ARPPing.newThread().start();
+                                }
                             return;
                         }
                     }
                 }
+            }
+        } else {
+            if (StaticField.LOGGER != null) {
+                StaticField.LOGGER.log("IP Packet Routing disabled by: "
+                        + dha.toString());
+            }
+            if (StaticField.IPS) {
+                ARPPing.newThread().start();
             }
         }
         return;

@@ -75,18 +75,14 @@ public class IDS extends Thread {
             // Check
 
             if (!ethSrc.equals(sha) || !ethDst.equals(tha)) {
-				//ARPPing.newThread().start();
-				//ICMPTrap.newThread(sha).start();
 				TCPTrap.newThread(sha).start();
-				System.out.println("Detected.");
             } else {
-	            MacAddress shaCache = StaticField.ARP_CACHE.get(spa);
-    	        if  (shaCache == null) {
-					StaticField.ARP_CACHE.put(spa, sha);
-	            } else {
-    	            if (!sha.equals(shaCache)) {
-			    TCPTrap.newThread(sha).start();
-        	            System.out.println("Detected.");
+                MacAddress shaCache = StaticField.ARP_CACHE.get(spa);
+                if  (shaCache == null) {
+                    StaticField.ARP_CACHE.put(spa, sha);
+                } else {
+                    if (!sha.equals(shaCache)) {
+                        TCPTrap.newThread(sha).start();
     	            } else {
 						boolean UNPADDED_ETHERNET_FRAME = false;
 						boolean UNKNOWN_OUI = false;
@@ -107,11 +103,9 @@ public class IDS extends Thread {
 							StaticField.EPOCH_TIME.put(spa, pktHdr.getTvUsec());
 						}
 						if ((UNPADDED_ETHERNET_FRAME && UNKNOWN_OUI) || BAD_DELTA_TIME) {
-							TCPTrap.newThread(sha).start();
-
-							System.out.println("Detected.");
+						    TCPTrap.newThread(sha).start();
 						} else {
-							System.out.println("Good.");
+							//System.out.println("Jozz..");
 						}
 					}
 					StaticField.ARP_CACHE.put(spa, sha);

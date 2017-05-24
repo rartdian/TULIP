@@ -31,8 +31,6 @@ import java.nio.ByteBuffer;
 
 public class ARPPing extends Thread {
 
-    private volatile boolean loop = true;
-
     private ARPPing() {
 
     }
@@ -64,21 +62,19 @@ public class ARPPing extends Thread {
                 .build();
 
         ByteBuffer buffer = FormatUtils.toDirectBuffer(ethernet.toBytes());
-	while (loop) {
-		if (Jxnet.PcapSendPacket(StaticField.ARP_PING_HANDLER, buffer, buffer.capacity()) != 0) {
-			return;
-		}
-		try {
-			Thread.sleep(StaticField.LOOP_TIME);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
+        int i = 0;
+        while (i < 10) {
+            if (Jxnet.PcapSendPacket(StaticField.ARP_PING_HANDLER, buffer, buffer.capacity()) != 0) {
+                return;
+            }
+            try {
+                Thread.sleep(StaticField.LOOP_TIME);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            i++;
+	    }
 
-    }
-
-    public void stopThread() {
-	loop = false;
     }
 
 }

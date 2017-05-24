@@ -34,6 +34,10 @@ import java.util.*;
 
 public class StaticField {
 
+    public static boolean IPS = false;
+
+    public static Logger LOGGER;
+
     public static String source;
     public static int snaplen;
     public static int promisc;
