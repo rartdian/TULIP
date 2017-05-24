@@ -119,15 +119,23 @@ public class IDS extends Thread {
     }
 
     public void stopThread() {
-        PcapBreakLoop(StaticField.ARP_HANDLER);
+        if (!StaticField.ARP_HANDLER.isClosed()) {
+            PcapBreakLoop(StaticField.ARP_HANDLER);
+        }
         try {
             Thread.sleep(StaticField.LOOP_TIME);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        PcapClose(StaticField.ARP_HANDLER);
-        PcapClose(StaticField.ICMP_HANDLER);
-        PcapClose(StaticField.ARP_PING_HANDLER);
+        if (!StaticField.ARP_HANDLER.isClosed()) {
+            PcapClose(StaticField.ARP_HANDLER);
+        }
+        if (!StaticField.ICMP_HANDLER.isClosed()) {
+            PcapClose(StaticField.ICMP_HANDLER);
+        }
+        if (!StaticField.ARP_PING_HANDLER.isClosed()) {
+            PcapClose(StaticField.ARP_PING_HANDLER);
+        }
     }
 
 }

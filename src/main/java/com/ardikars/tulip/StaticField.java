@@ -36,6 +36,8 @@ public class StaticField {
 
     public static boolean IPS = false;
 
+    public static boolean isGUI = false;
+
     public static Logger LOGGER;
 
     public static String source;

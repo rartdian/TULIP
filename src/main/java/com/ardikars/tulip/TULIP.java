@@ -24,11 +24,13 @@ import dorkbox.util.ActionHandler;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 
 public class TULIP {
 
-    private static IDS ids = IDS.newThread();
+    private static IDS ids;
 
     public static void main(String[] args) {
         gui(args);
@@ -58,6 +60,28 @@ public class TULIP {
                     }).show();
         };
 
+
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String[] source = new String[1];
+                try {
+                    source[0] = comboBox.getSelectedItem().toString();
+                } catch (Exception e) {
+
+                }
+                if (button.getText().equals("Start")) {
+                    console(source);
+                    button.setText("Stop");
+                } else {
+                    synchronized (ids) {
+                        ids.stopThread();
+                        button.setText("Start");
+                    }
+                }
+            }
+        });
+
         JFrame frame = new JFrame("TULIP");
         frame.setSize(400,200);
         frame.setResizable(false);
@@ -73,24 +97,6 @@ public class TULIP {
             source = comboBox.getSelectedItem().toString();
         } catch (Exception ex) {
             System.err.println(ex);
-        }
-
-        try {
-            StaticField.initialize(source, 1500, 1, 1, (int) StaticField.LOOP_TIME, 1);
-            ids.start();
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                public void run() {
-                    try {
-                        Thread.sleep(StaticField.LOOP_TIME);
-                        ids.stopThread();
-                        System.out.println("Closed.");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         frame.setVisible(true);
@@ -112,21 +118,19 @@ public class TULIP {
 
         try {
             StaticField.initialize(source, 1500, 1, 1, (int) StaticField.LOOP_TIME, 1);
+            ids = IDS.newThread();
             ids.start();
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
-                    try {
-                        Thread.sleep(StaticField.LOOP_TIME);
+                    synchronized (ids) {
                         ids.stopThread();
-                        System.out.println("Closed.");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private static Object[] getSources() {
