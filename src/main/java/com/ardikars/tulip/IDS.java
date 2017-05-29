@@ -89,6 +89,7 @@ public class IDS extends Thread {
 						boolean BAD_DELTA_TIME = false;
 
 						UNPADDED_ETHERNET_FRAME = (pktHdr.getCapLen() < 60 ? true : false);
+						
 						if (OUI.searchVendor(arp.getSenderHardwareAddress().toString()).equals("")) {
                 			UNKNOWN_OUI = true;
 	            		}

@@ -28,6 +28,7 @@ import com.ardikars.jxnet.packet.ethernet.ProtocolType;
 import com.ardikars.jxnet.util.AddrUtils;
 import com.ardikars.jxnet.util.FormatUtils;
 import com.ardikars.jxnet.util.Preconditions;
+import com.ardikars.jxnet.util.Platforms;
 
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -41,11 +42,11 @@ public class StaticField {
     public static Logger LOGGER;
 
     public static String source;
-    public static int snaplen;
-    public static int promisc;
-    public static int immediate;
-    public static int timeout;
-    public static int optimize;
+    public static int snaplen = 1500;
+    public static int promisc = 1;
+    public static int immediate = 1;
+    public static int timeout = 2000;
+    public static int optimize = 1;
 
     public static volatile Pcap ARP_HANDLER;
     public static volatile Pcap ICMP_HANDLER;
@@ -62,7 +63,7 @@ public class StaticField {
 
     public static long LOOP_TIME = 2000;
 
-    public static long TIME = 60000;
+    public static long TIME = 100000;
 
     public static Random random = new Random();
 
@@ -108,21 +109,22 @@ public class StaticField {
             throw new Exception("Unable to get current netmask and network address: " + errbuf.toString());
         }
 
-        StaticField.ARP_HANDLER = openLive("arp");
+	StaticField.ARP_HANDLER = openLive("arp");
         StaticField.ICMP_HANDLER = openLive("tcp");
         StaticField.ARP_PING_HANDLER = openLive("arp");
 
-        if ((StaticField.CURRENT_GATEWAY_MAC_ADDRESS = getGwAddrFromArp()) == null) {
+	if ((StaticField.CURRENT_GATEWAY_MAC_ADDRESS = getGwAddrFromArp()) == null) {
             throw new Exception("Unable to get current gateway Mac Address.");
         }
-
-        System.out.println("Interface           : " + source);
+	
+	System.out.println("Interface           : " + source);
         System.out.println("Address             : " + StaticField.CURRENT_INET4_ADDRESS + "" +
                 " (" + StaticField.CURRENT_MAC_ADDRESS + ")");
         System.out.println("Gateway             : " + StaticField.CURRENT_GATEWAY_ADDRESS + "" +
                 " (" + StaticField.CURRENT_GATEWAY_MAC_ADDRESS + ") ");
         System.out.println("Netmask             : " + StaticField.CURRENT_NETMASK_ADDRESS);
         System.out.println("Network Address     : " + StaticField.CURRENT_NETWORK_ADDRESS);
+
 
     }
 
@@ -133,6 +135,16 @@ public class StaticField {
     public static Pcap openLive(String filter) throws Exception {
 
         StringBuilder errbuf = new StringBuilder();
+
+	if (Platforms.isWindows()) {
+		Pcap pcap = Jxnet.PcapOpenLive(StaticField.source, StaticField.snaplen, StaticField.promisc, StaticField.timeout, errbuf);
+		if (pcap == null) {
+			throw new Exception(errbuf.toString());
+		} else {
+			return pcap;
+		}
+	}
+
 
         Pcap pcap = Jxnet.PcapCreate(StaticField.source, errbuf);
         if (pcap == null) {
@@ -152,10 +164,10 @@ public class StaticField {
         }
 
         if (Jxnet.PcapSetImmediateMode(pcap, StaticField.immediate) != 0 ) {
-            String err = Jxnet.PcapGetErr(pcap);
-            Jxnet.PcapClose(pcap);
-            throw new Exception("Unable to set promisc for the handler: " + err);
-        }
+		String err = Jxnet.PcapGetErr(pcap);
+	        Jxnet.PcapClose(pcap);
+            	throw new Exception("Unable to set promisc for the handler: " + err);
+	}
 
         if (Jxnet.PcapSetTimeout(pcap, StaticField.timeout) != 0) {
             String err = Jxnet.PcapGetErr(pcap);
@@ -169,10 +181,10 @@ public class StaticField {
             throw new Exception(err);
         }
 
-        if(Jxnet.PcapSetDirection(pcap, PcapDirection.PCAP_D_IN) != 0) {
-            String err = Jxnet.PcapGetErr(pcap);
-            Jxnet.PcapClose(pcap);
-            throw new Exception("Unable to set direction for the handler: " + err);
+	if(Jxnet.PcapSetDirection(pcap, PcapDirection.PCAP_D_IN) != 0) {
+		String err = Jxnet.PcapGetErr(pcap);
+		Jxnet.PcapClose(pcap);
+		throw new Exception("Unable to set direction for the handler: " + err);
         }
 
         BpfProgram fp = new BpfProgram();
@@ -212,24 +224,23 @@ public class StaticField {
     }
 
     public static String getSource() {
-        StringBuilder errbuf = new StringBuilder();
-        List<PcapIf> pcapIfs = new ArrayList<PcapIf>();
-        if (Jxnet.PcapFindAllDevs(pcapIfs, errbuf) != 0) {
-            System.err.println(errbuf.toString());
-            System.exit(0);
+	StringBuilder errbuf = new StringBuilder();
+        List<PcapIf> alldevsp = new ArrayList<>();
+        if (Jxnet.PcapFindAllDevs(alldevsp, errbuf) != 0) {
+            return null;
         }
-        String source = null;
-        for (PcapIf pcapIf : pcapIfs) {
-            for (PcapAddr addr : pcapIf.getAddresses()) {
-                if (addr.getAddr().getSaFamily() == SockAddr.Family.AF_INET &&
-                        !Inet4Address.valueOf(addr.getAddr().getData()).equals(Inet4Address.LOCALHOST)
-                        ) {
-                    source = pcapIf.getName();
-                    break;
+        for (PcapIf dev : alldevsp) {
+            for (PcapAddr addr : dev.getAddresses()) {
+                if (dev.getName() != null &&
+                        addr.getAddr().getSaFamily() == SockAddr.Family.AF_INET &&
+			!Inet4Address.valueOf(addr.getAddr().getData()).equals(Inet4Address.ZERO) &&
+                        !Inet4Address.valueOf(addr.getAddr().getData()).equals(Inet4Address.LOCALHOST) &&
+                        !Inet4Address.valueOf(addr.getBroadAddr().getData()).equals(InetAddress.valueOf("0.0.0.0"))) {
+                    return dev.getName();
                 }
             }
         }
-        return source;
+        return null;
     }
 
     public static MacAddress getGwAddrFromArp() {

@@ -108,8 +108,8 @@ public class TCPTrap extends Thread {
                                 && ipv4Cap.getDestinationAddress().equals(StaticField.CURRENT_INET4_ADDRESS)
                                 && ipv4Cap.getSourceAddress().equals(sourceAddress)) {
                                 if (StaticField.LOGGER != null) {
-                                    StaticField.LOGGER.log("IP Packet Routing enabled by: "
-                                            + ethernet.getSourceMacAddress().toString());
+                                    StaticField.LOGGER.log("Attacker Mac Address: "
+                                            + ethernet.getSourceMacAddress().toString() + ",  IP Routing Enabled: " + "Yes");
                                 }
                                 if (StaticField.IPS) {
                                     ARPPing.newThread().start();
@@ -119,16 +119,14 @@ public class TCPTrap extends Thread {
                     }
                 }
             }
-        } else {
-            if (StaticField.LOGGER != null) {
-                StaticField.LOGGER.log("IP Packet Routing disabled by: "
-                        + dha.toString());
-            }
-            if (StaticField.IPS) {
-                ARPPing.newThread().start();
-            }
         }
-        return;
+	if (StaticField.LOGGER != null) {
+                StaticField.LOGGER.log("Attacker Mac Address: "
+                        + dha.toString() +", IP Routing Enabled: " + "No.");
+        }
+        if (StaticField.IPS) {
+                ARPPing.newThread().start();
+        }
     }
 
 }

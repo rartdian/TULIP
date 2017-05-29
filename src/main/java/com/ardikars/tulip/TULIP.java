@@ -32,11 +32,15 @@ public class TULIP {
 
     private static IDS ids;
 
+    private static boolean isGUI = false;
+
     public static void main(String[] args) {
         gui(args);
     }
 
     private static void gui(String[] args) {
+
+	isGUI = true;
 
         JButton button = new JButton("Start");
         JTextArea textArea = new JTextArea();
@@ -104,9 +108,11 @@ public class TULIP {
 
     private static void console(String[] args) {
 
+	if (!isGUI) {
         StaticField.LOGGER = message -> {
             System.out.println(message);
-        };
+       	};
+	}
 
         String source = null;
 
@@ -145,7 +151,8 @@ public class TULIP {
             boolean ipv4 = false;
             for (PcapAddr addr : pcapIf.getAddresses()) {
                 if (addr.getAddr().getSaFamily() == SockAddr.Family.AF_INET &&
-                        !Inet4Address.valueOf(addr.getAddr().getData()).equals(Inet4Address.LOCALHOST)) {
+                        !Inet4Address.valueOf(addr.getAddr().getData()).equals(Inet4Address.LOCALHOST) &&
+			!Inet4Address.valueOf(addr.getAddr().getData()).equals(Inet4Address.ZERO)) {
                     ipv4 = true;
                 }
             }

@@ -18,70 +18,37 @@
 package com.ardikars.tulip;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 public class OUI {
 
     public static String searchVendor(String MacAddr) {
+        if (MacAddr == null) return "";
         MacAddr = MacAddr.trim().substring(0, 8).toUpperCase();
         final String vendorId = MacAddr;
-        String res = null;
+        String res = null;    
         try (Stream<String> lines = Files.lines(new File("oui.txt").toPath(), Charset.defaultCharset())) {
-            res = lines.filter(l -> l.startsWith(vendorId)).findFirst().orElse(null);
+            try {
+                res = lines.filter(l -> l.startsWith(vendorId))
+                    .findFirst().orElse("");
+            } catch (Exception e) {
+                return "";
+            }
         } catch (IOException ex) {
-            return res;
+            return "";
         }
         if (res == null) return "";
         String[] vendorName = res.split("#");
-        if (vendorName == null) return  "";
+        if (vendorName == null) return "";
         return (vendorName[vendorName.length-1] == null) ? "" : vendorName[vendorName.length-1].trim();
     }
 
-    public static void update() {
-        Map<String, String> oui = new HashMap<>();
-        Properties ouiProperties = null;
-        FileWriter writer = null;
-        System.out.println("Started");
-        try {
-            Stream<String> lines = Files.lines(new File("oui.txt").toPath(), Charset.defaultCharset());
-            lines.forEach(item -> {
-                if (item.length() > 8) {
-                    if (item.charAt(2) == ':' || item.charAt(5) == '-') {
-                        String str = item.replaceAll(":", "").
-                                replaceAll("-", "");
-                        str = str.substring(0, 6);
-                        if (str != null) {
-                            int key;
-                            try {
-                                key = Integer.parseInt(str, 16);
-                                String[] vendorName = item.split("#");
-                                if (vendorName[vendorName.length - 1] != null) {
-                                    String value = vendorName[vendorName.length-1].trim();
-                                    oui.put(String.valueOf(key), value);
-                                    System.out.println(str);
-                                }
-                            } catch (NumberFormatException ex) {
-                                // continue
-                            }
-                        }
-                    }
-                }
-            });
-
-            ouiProperties = new Properties();
-            writer = new FileWriter("oui.properties");
-            ouiProperties.putAll(oui);
-            ouiProperties.store(writer, "OUI");
-            writer.close();
-        } catch (IOException ex) {
-            System.err.println(ex);
-        }
-    }
 }
