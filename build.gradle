@@ -48,7 +48,10 @@ artifacts {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.ardikars.jxnet:jxnet-core:1.1.3'
+    compile 'com.ardikars.jxnet:jxnet-packet:1.1.3'
+    compile 'com.ardikars.jxnet:jxnet-util:1.1.3'
     compile 'com.dorkbox:Notify:2.20'
     //compile 'com.darkbox:SystemTray:3.1'
 }
