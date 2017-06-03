@@ -35,14 +35,21 @@ public class TULIP {
     private static boolean isGUI = false;
 
     public static void main(String[] args) {
+	if (args.length > 0) {
+		if (args[0].equals("IPS")) {
+			System.out.println("IPS AKTIF.");
+			StaticField.IPS = true;
+		}
+	}
         gui(args);
     }
 
+    @SuppressWarnings("unchecked")
     private static void gui(String[] args) {
 
 	isGUI = true;
 
-        JButton button = new JButton("Start");
+        JButton button = new JButton("Mulai");
         JTextArea textArea = new JTextArea();
         JScrollPane scrollPane = new JScrollPane(textArea);
         JComboBox comboBox = new JComboBox(getSources());
@@ -50,7 +57,7 @@ public class TULIP {
         StaticField.LOGGER = message -> {
             textArea.append(message +" \n");
             Notify.create()
-                    .title("ARP Spoof detected.")
+                    .title("Terdeteksi.")
                     .text(message + "\n")
                     .hideAfter(1000)
                     .position(Pos.BOTTOM_RIGHT)
@@ -74,21 +81,21 @@ public class TULIP {
                 } catch (Exception e) {
 
                 }
-                if (button.getText().equals("Start")) {
+                if (button.getText().equals("Mulai")) {
                     console(source);
-                    button.setText("Stop");
+                    button.setText("Berhenti");
                 } else {
                     synchronized (ids) {
                         ids.stopThread();
-                        button.setText("Start");
+                        button.setText("Mulai");
                     }
                 }
             }
         });
 
         JFrame frame = new JFrame("TULIP");
-        frame.setSize(400,200);
-        frame.setResizable(false);
+        frame.setSize(500,200);
+        //frame.setResizable(false);
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(comboBox, BorderLayout.NORTH);
@@ -102,7 +109,7 @@ public class TULIP {
         } catch (Exception ex) {
             System.err.println(ex);
         }
-
+	frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 

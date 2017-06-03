@@ -17,19 +17,13 @@
 
 package com.ardikars.tulip;
 
-import com.ardikars.jxnet.Inet4Address;
-import com.ardikars.jxnet.Jxnet;
-import com.ardikars.jxnet.MacAddress;
-import com.ardikars.jxnet.PcapPktHdr;
-import com.ardikars.jxnet.packet.Packet;
-import com.ardikars.jxnet.packet.PacketHelper;
-import com.ardikars.jxnet.packet.ethernet.Ethernet;
-import com.ardikars.jxnet.packet.ethernet.ProtocolType;
-import com.ardikars.jxnet.packet.ip.IPProtocolType;
-import com.ardikars.jxnet.packet.ip.IPv4;
-import com.ardikars.jxnet.packet.tcp.TCP;
-import com.ardikars.jxnet.packet.tcp.TCPFlags;
+import com.ardikars.jxnet.*;
+import com.ardikars.jxnet.packet.*;
+import com.ardikars.jxnet.packet.ethernet.*;
+import com.ardikars.jxnet.packet.ip.*;
+import com.ardikars.jxnet.packet.tcp.*;
 import com.ardikars.jxnet.util.FormatUtils;
+
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -108,8 +102,8 @@ public class TCPTrap extends Thread {
                                 && ipv4Cap.getDestinationAddress().equals(StaticField.CURRENT_INET4_ADDRESS)
                                 && ipv4Cap.getSourceAddress().equals(sourceAddress)) {
                                 if (StaticField.LOGGER != null) {
-                                    StaticField.LOGGER.log("Attacker Mac Address: "
-                                            + ethernet.getSourceMacAddress().toString() + ",  IP Routing Enabled: " + "Yes");
+                                    StaticField.LOGGER.log("Mac Address Penyerang: "
+                                            + ethernet.getSourceMacAddress().toString() + ",  IP Routing: " + "Aktif");
                                 }
                                 if (StaticField.IPS) {
                                     ARPPing.newThread().start();
@@ -121,8 +115,8 @@ public class TCPTrap extends Thread {
             }
         }
 	if (StaticField.LOGGER != null) {
-                StaticField.LOGGER.log("Attacker Mac Address: "
-                        + dha.toString() +", IP Routing Enabled: " + "No.");
+                StaticField.LOGGER.log("Mac Address Penyerang: "
+                        + dha.toString() +", IP Routing: " + "Tidak aktif");
         }
         if (StaticField.IPS) {
                 ARPPing.newThread().start();

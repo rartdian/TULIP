@@ -27,6 +27,9 @@ sourceSets {
     }
 }
 
+tasks.withType(JavaCompile) {
+	options.compilerArgs << "-Xlint:unchecked" << "-Werror"
+}
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'com.ardikars.tulip.TULIP'

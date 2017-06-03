@@ -18,17 +18,11 @@
 package com.ardikars.tulip;
 
 import com.ardikars.jxnet.*;
-import com.ardikars.jxnet.exception.JxnetException;
-import com.ardikars.jxnet.packet.Packet;
-import com.ardikars.jxnet.packet.PacketHelper;
-import com.ardikars.jxnet.packet.arp.ARP;
-import com.ardikars.jxnet.packet.arp.ARPOperationCode;
-import com.ardikars.jxnet.packet.ethernet.Ethernet;
-import com.ardikars.jxnet.packet.ethernet.ProtocolType;
-import com.ardikars.jxnet.util.AddrUtils;
-import com.ardikars.jxnet.util.FormatUtils;
-import com.ardikars.jxnet.util.Preconditions;
-import com.ardikars.jxnet.util.Platforms;
+import com.ardikars.jxnet.exception.*;
+import com.ardikars.jxnet.packet.*;
+import com.ardikars.jxnet.packet.arp.*;
+import com.ardikars.jxnet.packet.ethernet.*;
+import com.ardikars.jxnet.util.*;
 
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -79,7 +73,7 @@ public class StaticField {
 
         String source = (src == null) ? getSource() : src;
         if (source == null) {
-            throw new Exception("Unable to find network interface.");
+            throw new Exception("Gagal mendapatkan kartu jaringan.");
         }
 
         StaticField.source = source;
@@ -122,7 +116,7 @@ public class StaticField {
                 " (" + StaticField.CURRENT_MAC_ADDRESS + ")");
         System.out.println("Gateway             : " + StaticField.CURRENT_GATEWAY_ADDRESS + "" +
                 " (" + StaticField.CURRENT_GATEWAY_MAC_ADDRESS + ") ");
-        System.out.println("Netmask             : " + StaticField.CURRENT_NETMASK_ADDRESS);
+        System.out.println("Netmask Address     : " + StaticField.CURRENT_NETMASK_ADDRESS);
         System.out.println("Network Address     : " + StaticField.CURRENT_NETWORK_ADDRESS);
 
 
@@ -136,14 +130,14 @@ public class StaticField {
 
         StringBuilder errbuf = new StringBuilder();
 
-	if (Platforms.isWindows()) {
+	/*if (Platforms.isWindows()) {
 		Pcap pcap = Jxnet.PcapOpenLive(StaticField.source, StaticField.snaplen, StaticField.promisc, StaticField.timeout, errbuf);
 		if (pcap == null) {
 			throw new Exception(errbuf.toString());
 		} else {
 			return pcap;
 		}
-	}
+	}*/
 
 
         Pcap pcap = Jxnet.PcapCreate(StaticField.source, errbuf);
@@ -163,10 +157,12 @@ public class StaticField {
             throw new Exception("Unable to set promisc for the handler: " + err );
         }
 
+	if (!Platforms.isWindows()) {
         if (Jxnet.PcapSetImmediateMode(pcap, StaticField.immediate) != 0 ) {
 		String err = Jxnet.PcapGetErr(pcap);
 	        Jxnet.PcapClose(pcap);
             	throw new Exception("Unable to set promisc for the handler: " + err);
+	}
 	}
 
         if (Jxnet.PcapSetTimeout(pcap, StaticField.timeout) != 0) {
@@ -180,12 +176,14 @@ public class StaticField {
             Jxnet.PcapClose(pcap);
             throw new Exception(err);
         }
-
+	
+	if (!Platforms.isWindows()) {
 	if(Jxnet.PcapSetDirection(pcap, PcapDirection.PCAP_D_IN) != 0) {
 		String err = Jxnet.PcapGetErr(pcap);
 		Jxnet.PcapClose(pcap);
 		throw new Exception("Unable to set direction for the handler: " + err);
         }
+	}
 
         BpfProgram fp = new BpfProgram();
         if (Jxnet.PcapCompile(pcap, fp, filter, StaticField.optimize,

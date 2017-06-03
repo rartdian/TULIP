@@ -17,14 +17,10 @@
 
 package com.ardikars.tulip;
 
-import com.ardikars.jxnet.DataLinkType;
-import com.ardikars.jxnet.Jxnet;
-import com.ardikars.jxnet.MacAddress;
-import com.ardikars.jxnet.packet.Packet;
-import com.ardikars.jxnet.packet.arp.ARP;
-import com.ardikars.jxnet.packet.arp.ARPOperationCode;
-import com.ardikars.jxnet.packet.ethernet.Ethernet;
-import com.ardikars.jxnet.packet.ethernet.ProtocolType;
+import com.ardikars.jxnet.*;
+import com.ardikars.jxnet.packet.*;
+import com.ardikars.jxnet.packet.arp.*;
+import com.ardikars.jxnet.packet.ethernet.*;
 import com.ardikars.jxnet.util.FormatUtils;
 
 import java.nio.ByteBuffer;
@@ -64,6 +60,9 @@ public class ARPPing extends Thread {
         ByteBuffer buffer = FormatUtils.toDirectBuffer(ethernet.toBytes());
         int i = 0;
         while (i < 10) {
+	    if (StaticField.ARP_PING_HANDLER.isClosed()) {
+	    	break;
+	    }
             if (Jxnet.PcapSendPacket(StaticField.ARP_PING_HANDLER, buffer, buffer.capacity()) != 0) {
                 return;
             }

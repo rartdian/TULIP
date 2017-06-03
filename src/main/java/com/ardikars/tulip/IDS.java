@@ -17,15 +17,10 @@
 
 package com.ardikars.tulip;
 
-import com.ardikars.jxnet.Inet4Address;
-import com.ardikars.jxnet.MacAddress;
-import com.ardikars.jxnet.packet.PacketHandler;
-import com.ardikars.jxnet.packet.PacketHelper;
-import com.ardikars.jxnet.packet.arp.ARP;
-import com.ardikars.jxnet.packet.arp.ARPOperationCode;
-import com.ardikars.jxnet.packet.ethernet.Ethernet;
-import com.ardikars.jxnet.packet.ethernet.ProtocolType;
-
+import com.ardikars.jxnet.*;
+import com.ardikars.jxnet.packet.*;
+import com.ardikars.jxnet.packet.arp.*;
+import com.ardikars.jxnet.packet.ethernet.*;
 import static com.ardikars.jxnet.Jxnet.*;
 
 public class IDS extends Thread {
