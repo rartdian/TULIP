@@ -63,8 +63,8 @@ public class IDS extends Thread {
             tpa = arp.getTargetProtocolAddress();
 
             if (arp.getOperationCode() != ARPOperationCode.ARP_REPLY ||
-                    !ethDst.equals(StaticField.CURRENT_MAC_ADDRESS) ||
-                    tpa.equals(StaticField.CURRENT_MAC_ADDRESS) || ethSrc.equals(StaticField.CURRENT_GATEWAY_MAC_ADDRESS)) {
+                    !ethDst.equals(StaticField.MAC_ADDRESS) ||
+                    tpa.equals(StaticField.MAC_ADDRESS) || ethSrc.equals(StaticField.GATEWAY_MAC_ADDRESS)) {
                 return;
             }
             // Check
@@ -79,34 +79,34 @@ public class IDS extends Thread {
                     if (!sha.equals(shaCache)) {
                         TCPTrap.newThread(sha).start();
     	            } else {
-						boolean UNPADDED_ETHERNET_FRAME = false;
-						boolean UNKNOWN_OUI = false;
-						boolean BAD_DELTA_TIME = false;
+                        boolean UNPADDED_ETHERNET_FRAME = false;
+                        boolean UNKNOWN_OUI = false;
+                        boolean BAD_DELTA_TIME = false;
 
-						UNPADDED_ETHERNET_FRAME = (pktHdr.getCapLen() < 60 ? true : false);
-						
-						if (OUI.searchVendor(arp.getSenderHardwareAddress().toString()).equals("")) {
-                			UNKNOWN_OUI = true;
-	            		}
-						Long epochTimeCache = StaticField.EPOCH_TIME.get(spa);
-						if (epochTimeCache == null || epochTimeCache == 0) {
-							StaticField.EPOCH_TIME.put(spa, pktHdr.getTvUsec());
-						} else {
-							long time = (pktHdr.getTvUsec() - epochTimeCache);
-							if (time < StaticField.TIME) {
-								BAD_DELTA_TIME = true;
-							}
-							StaticField.EPOCH_TIME.put(spa, pktHdr.getTvUsec());
-						}
-						if ((UNPADDED_ETHERNET_FRAME && UNKNOWN_OUI) || BAD_DELTA_TIME) {
-						    TCPTrap.newThread(sha).start();
-						} else {
-							//System.out.println("Jozz..");
-						}
-					}
-					StaticField.ARP_CACHE.put(spa, sha);
-				}
-			}
+                        UNPADDED_ETHERNET_FRAME = (pktHdr.getCapLen() < 60 ? true : false);
+
+                        if (OUI.searchVendor(arp.getSenderHardwareAddress().toString()).equals("")) {
+                            UNKNOWN_OUI = true;
+                        }
+                        Long epochTimeCache = StaticField.EPOCH_TIME.get(spa);
+                        if (epochTimeCache == null || epochTimeCache == 0) {
+                            StaticField.EPOCH_TIME.put(spa, pktHdr.getTvUsec());
+                        } else {
+                            long time = (pktHdr.getTvUsec() - epochTimeCache);
+                            if (time < StaticField.TIME) {
+                                BAD_DELTA_TIME = true;
+                            }
+                            StaticField.EPOCH_TIME.put(spa, pktHdr.getTvUsec());
+                        }
+                        if ((UNPADDED_ETHERNET_FRAME && UNKNOWN_OUI) || BAD_DELTA_TIME) {
+                            TCPTrap.newThread(sha).start();
+                        } else {
+                            //System.out.println("Jozz..");
+                        }
+                    }
+                    StaticField.ARP_CACHE.put(spa, sha);
+                }
+            }
 
         };
 
@@ -117,20 +117,6 @@ public class IDS extends Thread {
     public void stopThread() {
         if (!StaticField.ARP_HANDLER.isClosed()) {
             PcapBreakLoop(StaticField.ARP_HANDLER);
-        }
-        try {
-            Thread.sleep(StaticField.LOOP_TIME);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (!StaticField.ARP_HANDLER.isClosed()) {
-            PcapClose(StaticField.ARP_HANDLER);
-        }
-        if (!StaticField.ICMP_HANDLER.isClosed()) {
-            PcapClose(StaticField.ICMP_HANDLER);
-        }
-        if (!StaticField.ARP_PING_HANDLER.isClosed()) {
-            PcapClose(StaticField.ARP_PING_HANDLER);
         }
     }
 

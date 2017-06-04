@@ -21,8 +21,8 @@ sourceSets {
             srcDir 'src/main/java'
         }
         resources {
-            srcDirs 'src/main/resources'
-            include '**/*'
+            srcDirs 'src/main/'
+            include 'resources/**/*'
         }
     }
 }
@@ -32,14 +32,14 @@ tasks.withType(JavaCompile) {
 }
 
 if (!hasProperty('mainClass')) {
-    ext.mainClass = 'com.ardikars.tulip.TULIP'
+    ext.mainClass = 'com.ardikars.tulip.Window'
 }
 
 task fatJar(type: Jar) {
     manifest {
         attributes 'TULIP': 'TULIP ${version}',
                 'TULIP-Version': version,
-                'Main-Class': 'com.ardikars.tulip.TULIP'
+                'Main-Class': 'com.ardikars.tulip.Window'
     }
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }

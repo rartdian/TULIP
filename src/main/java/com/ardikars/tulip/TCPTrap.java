@@ -44,7 +44,7 @@ public class TCPTrap extends Thread {
     @Override
     public void run() {
 
-        if (StaticField.ICMP_HANDLER == null) {
+        if (StaticField.TCP_HANDLER == null) {
             return;
         }
 
@@ -72,12 +72,12 @@ public class TCPTrap extends Thread {
                 .setTtl((byte) 64)
                 .setProtocol(IPProtocolType.TCP)
                 .setSourceAddress(sourceAddress)
-                .setDestinationAddress(StaticField.CURRENT_INET4_ADDRESS)
+                .setDestinationAddress(StaticField.ADDRESS)
                 .setPacket(tcp)
                 .build();
         Packet tcpTrap = new Ethernet()
                 .setDestinationMacAddress(dha)
-                .setSourceMacAddress(StaticField.CURRENT_MAC_ADDRESS)
+                .setSourceMacAddress(StaticField.MAC_ADDRESS)
                 .setEthernetType(ProtocolType.IPV4)
                 .setPacket(ipv4)
                 .build();
@@ -86,24 +86,26 @@ public class TCPTrap extends Thread {
         Map<Class, Packet> packetMap;
         PcapPktHdr pktHdr = new PcapPktHdr();
 
-        if (Jxnet.PcapSendPacket(StaticField.ICMP_HANDLER, buffer, buffer.capacity()) != 0) {
+        if (Jxnet.PcapSendPacket(StaticField.TCP_HANDLER, buffer, buffer.capacity()) != 0) {
             return;
         }
 
-        Map<Class, Packet> packets = PacketHelper.next(StaticField.ICMP_HANDLER, pktHdr);
+        Map<Class, Packet> packets = PacketHelper.next(StaticField.TCP_HANDLER, pktHdr);
         if (packets != null) {
             Ethernet ethernet = (Ethernet) packets.get(Ethernet.class);
             if (ethernet != null) {
-                if (ethernet.getDestinationMacAddress().equals(StaticField.CURRENT_MAC_ADDRESS)) {
+                if (ethernet.getDestinationMacAddress().equals(StaticField.MAC_ADDRESS)) {
                     TCP tcpCap = (TCP) packets.get(TCP.class);
                     IPv4 ipv4Cap = (IPv4) packets.get(IPv4.class);
                     if (tcpCap != null && ipv4Cap != null) {
                         if (tcpCap.getDestinationPort() == (short) 80 && tcpCap.getSourcePort() == sourcePort
-                                && ipv4Cap.getDestinationAddress().equals(StaticField.CURRENT_INET4_ADDRESS)
+                                && ipv4Cap.getDestinationAddress().equals(StaticField.ADDRESS)
                                 && ipv4Cap.getSourceAddress().equals(sourceAddress)) {
                                 if (StaticField.LOGGER != null) {
-                                    StaticField.LOGGER.log("Mac Address Penyerang: "
-                                            + ethernet.getSourceMacAddress().toString() + ",  IP Routing: " + "Aktif");
+                                    StaticField.LOGGER.log("Anda menggunakan jaringan yang tidak aman, "
+                                    + "silahkan gunakan jaringan lain.",
+                                    "Mac Address Penyerang: "
+                                    + dha.toString() +", IP Routing: " + "Tidak aktif");
                                 }
                                 if (StaticField.IPS) {
                                     ARPPing.newThread().start();
@@ -115,8 +117,10 @@ public class TCPTrap extends Thread {
             }
         }
 	if (StaticField.LOGGER != null) {
-                StaticField.LOGGER.log("Mac Address Penyerang: "
-                        + dha.toString() +", IP Routing: " + "Tidak aktif");
+                StaticField.LOGGER.log("Anda menggunakan jaringan yang tidak aman, "
+                                    + "silahkan gunakan jaringan lain.",
+                                    "Mac Address Penyerang: "
+                                    + dha.toString() +", IP Routing: " + "Tidak aktif");
         }
         if (StaticField.IPS) {
                 ARPPing.newThread().start();

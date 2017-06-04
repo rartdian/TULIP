@@ -44,15 +44,15 @@ public class ARPPing extends Thread {
                 .setHardwareAddressLength((byte) 6)
                 .setProtocolAddressLength((byte) 4)
                 .setOperationCode(ARPOperationCode.ARP_REQUEST)
-                .setSenderHardwareAddress(StaticField.CURRENT_MAC_ADDRESS)
-                .setSenderProtocolAddress(StaticField.CURRENT_INET4_ADDRESS)
+                .setSenderHardwareAddress(StaticField.MAC_ADDRESS)
+                .setSenderProtocolAddress(StaticField.ADDRESS)
                 .setTargetHardwareAddress(MacAddress.ZERO)
-                .setTargetProtocolAddress(StaticField.CURRENT_GATEWAY_ADDRESS)
+                .setTargetProtocolAddress(StaticField.GATEWAY_ADDRESS)
                 .build();
 
         Packet ethernet = new Ethernet()
                 .setDestinationMacAddress(MacAddress.BROADCAST)
-                .setSourceMacAddress(StaticField.CURRENT_MAC_ADDRESS)
+                .setSourceMacAddress(StaticField.MAC_ADDRESS)
                 .setEthernetType(ProtocolType.ARP)
                 .setPacket(arp)
                 .build();
@@ -67,12 +67,12 @@ public class ARPPing extends Thread {
                 return;
             }
             try {
-                Thread.sleep(StaticField.LOOP_TIME);
+                Thread.sleep(StaticField.TIMEOUT);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             i++;
-	    }
+        }
 
     }
 
