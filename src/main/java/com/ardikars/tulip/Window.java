@@ -46,7 +46,7 @@ public class Window extends javax.swing.JFrame {
         
         StaticField.LOGGER = (message1, message2) -> {
             log.append(message1 + "\n" + message2 + "\n");
-            if (StaticField.COUNTER == 20) {
+            if (StaticField.COUNTER == counter) {
                 notify = Notify.create()
                         .title("Peringatan Keamanan Jaringan.")
                         .text(message1 + "\n")

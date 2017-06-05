@@ -228,7 +228,7 @@ public class StaticField {
         ByteBuffer buffer = FormatUtils.toDirectBuffer(ethernet.toBytes());
         PcapPktHdr pktHdr = new PcapPktHdr();
         byte[] bytes;
-        for (int i=0; i<100; i++) {
+        for (int i=0; i<50; i++) {
             if (Jxnet.PcapSendPacket(ARP_HANDLER, buffer, buffer.capacity()) != 0) {
                 return null;
             }
@@ -240,6 +240,7 @@ public class StaticField {
                     arpCap.getSenderProtocolAddress().equals(GATEWAY_ADDRESS)) {
                 return arpCap.getSenderHardwareAddress();
             }
+	    try{Thread.sleep(StaticField.TIMEOUT);}catch(InterruptedException e){System.out.println(e);}
         }
         return null;
     }
