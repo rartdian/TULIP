@@ -105,10 +105,10 @@ public class TCPTrap extends Thread {
                                     StaticField.LOGGER.log("Anda menggunakan jaringan yang tidak aman, "
                                     + "silahkan gunakan jaringan lain.",
                                     "Mac Address Penyerang: "
-                                    + dha.toString() +", IP Routing: " + "Tidak aktif");
+                                    + dha.toString() +", IP Routing: " + "Aktif");
                                 }
                                 if (StaticField.IPS) {
-                                    ARPPing.newThread().start();
+                                    //ARPPing.newThread().start();
                                 }
                             return;
                         }
@@ -123,7 +123,7 @@ public class TCPTrap extends Thread {
                                     + dha.toString() +", IP Routing: " + "Tidak aktif");
         }
         if (StaticField.IPS) {
-                ARPPing.newThread().start();
+                //ARPPing.newThread().start();
         }
     }
 
